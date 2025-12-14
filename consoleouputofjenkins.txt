@@ -1,0 +1,513 @@
+Started by user Vignesh 
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on Jenkins in /var/lib/jenkins/workspace/Mytrendapp
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout)
+[Pipeline] git
+The recommended git tool is: NONE
+using credential github-creds
+ > git rev-parse --resolve-git-dir /var/lib/jenkins/workspace/Mytrendapp/.git # timeout=10
+Fetching changes from the remote Git repository
+ > git config remote.origin.url https://github.com/Viki07-14/Trendapp.git # timeout=10
+Fetching upstream changes from https://github.com/Viki07-14/Trendapp.git
+ > git --version # timeout=10
+ > git --version # 'git version 2.43.0'
+using GIT_ASKPASS to set credentials github-creds
+ > git fetch --tags --force --progress -- https://github.com/Viki07-14/Trendapp.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+Checking out Revision cd0d138825e27004b1e3bb281f249470d04b5701 (refs/remotes/origin/main)
+ > git config core.sparsecheckout # timeout=10
+ > git checkout -f cd0d138825e27004b1e3bb281f249470d04b5701 # timeout=10
+ > git branch -a -v --no-abbrev # timeout=10
+ > git branch -D main # timeout=10
+ > git checkout -b main cd0d138825e27004b1e3bb281f249470d04b5701 # timeout=10
+Commit message: "Update index.html"
+ > git rev-list --no-walk cd0d138825e27004b1e3bb281f249470d04b5701 # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build Image using Docker Compose)
+[Pipeline] sh
++ docker compose -f docker/docker-compose.yml build --no-cache
+ Image docker-trend-app Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 567B done
+#1 DONE 0.0s
+
+#2 [internal] load build definition from Dockerfile
+#2 transferring dockerfile: 306B done
+#2 DONE 0.0s
+
+#3 [internal] load metadata for docker.io/library/nginx:alpine
+#3 DONE 0.7s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 100B done
+#4 DONE 0.0s
+
+#5 [internal] load build context
+#5 transferring context: 3.87kB done
+#5 DONE 0.0s
+
+#6 [1/3] FROM docker.io/library/nginx:alpine@sha256:052b75ab72f690f33debaa51c7e08d9b969a0447a133eb2b99cc905d9188cb2b
+#6 resolve docker.io/library/nginx:alpine@sha256:052b75ab72f690f33debaa51c7e08d9b969a0447a133eb2b99cc905d9188cb2b 0.0s done
+#6 CACHED
+
+#7 [2/3] RUN rm -rf /usr/share/nginx/html/*
+#7 DONE 0.2s
+
+#8 [3/3] COPY dist/ /usr/share/nginx/html
+#8 DONE 0.1s
+
+#9 exporting to image
+#9 exporting layers
+#9 exporting layers 0.3s done
+#9 exporting manifest sha256:033176ae785ffbb1ea2597d81399da46e62ad2601b7fd764e1fea764fd7384ef 0.0s done
+#9 exporting config sha256:c3fb8a58a67e61d7318dff45196f5c8fefc452828c3a5a7eca0153e9dca51a71 0.0s done
+#9 exporting attestation manifest sha256:9f59889db1898b06a2a17d337eaba08fd97a0fe3c6214811e8362a80799d4226 0.0s done
+#9 exporting manifest list sha256:557feb2c9445f895306431bbacdbc866c40a39e5b3a5c4b470875e1fa90223ba 0.0s done
+#9 naming to docker.io/library/docker-trend-app:latest done
+#9 unpacking to docker.io/library/docker-trend-app:latest 0.0s done
+#9 DONE 0.4s
+
+#10 resolving provenance for metadata file
+#10 DONE 0.0s
+ Image docker-trend-app Built 
++ docker tag docker-trend-app:latest vikimano/trend-app:latest
++ docker tag docker-trend-app:latest vikimano/trend-app:23
++ docker images
++ grep trend
+WARNING: This output is designed for human readability. For machine-readable output, please use --format.
+docker-trend-app:latest     557feb2c9445       99.6MB           32MB        
+vikimano/trend-app:12       007b0e6aa8c7       99.6MB           32MB        
+vikimano/trend-app:13       b316a1d23b08       99.6MB           32MB        
+vikimano/trend-app:14       fe91e47d7677       99.6MB           32MB        
+vikimano/trend-app:15       e93e2cdda7ad       99.6MB           32MB        
+vikimano/trend-app:16       aa1b21ef3b82       99.6MB           32MB        
+vikimano/trend-app:17       cebc2f827c4a       99.6MB           32MB        
+vikimano/trend-app:18       3e5092d1c51f       99.6MB           32MB        
+vikimano/trend-app:19       53f9a2217650       99.6MB           32MB        
+vikimano/trend-app:20       ba85182d217e       99.6MB           32MB        
+vikimano/trend-app:21       6f3f1eee93a7       99.6MB           32MB        
+vikimano/trend-app:22       311df53724e0       99.6MB           32MB   U    
+vikimano/trend-app:23       557feb2c9445       99.6MB           32MB        
+vikimano/trend-app:latest   557feb2c9445       99.6MB           32MB        
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Push Image to Docker Hub)
+[Pipeline] withCredentials
+Masking supported pattern matches of $DOCKER_PASS
+[Pipeline] {
+[Pipeline] sh
++ echo ****
++ docker login -u vikimano --password-stdin
+Login Succeeded
++ docker push vikimano/trend-app:latest
+The push refers to repository [docker.io/vikimano/trend-app]
+3f2b9e2188c4: Waiting
+136bc6976c20: Waiting
+bee94132c0fc: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+ad5b65da02cf: Waiting
+5d2cc344426d: Waiting
+abdece946203: Waiting
+d2b6c8337255: Waiting
+51c30493937c: Waiting
+fc13532503d7: Waiting
+51c30493937c: Waiting
+fc13532503d7: Waiting
+3f2b9e2188c4: Waiting
+136bc6976c20: Waiting
+bee94132c0fc: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+ad5b65da02cf: Waiting
+5d2cc344426d: Waiting
+abdece946203: Waiting
+d2b6c8337255: Waiting
+abdece946203: Waiting
+d2b6c8337255: Waiting
+51c30493937c: Waiting
+fc13532503d7: Waiting
+3f2b9e2188c4: Waiting
+136bc6976c20: Waiting
+bee94132c0fc: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+ad5b65da02cf: Waiting
+5d2cc344426d: Waiting
+d2b6c8337255: Waiting
+51c30493937c: Waiting
+fc13532503d7: Waiting
+3f2b9e2188c4: Waiting
+136bc6976c20: Waiting
+bee94132c0fc: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+ad5b65da02cf: Waiting
+5d2cc344426d: Waiting
+abdece946203: Waiting
+bee94132c0fc: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+ad5b65da02cf: Waiting
+5d2cc344426d: Waiting
+abdece946203: Waiting
+d2b6c8337255: Waiting
+51c30493937c: Waiting
+fc13532503d7: Waiting
+3f2b9e2188c4: Waiting
+136bc6976c20: Waiting
+51c30493937c: Waiting
+fc13532503d7: Waiting
+3f2b9e2188c4: Waiting
+136bc6976c20: Waiting
+bee94132c0fc: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+ad5b65da02cf: Waiting
+5d2cc344426d: Waiting
+abdece946203: Waiting
+d2b6c8337255: Waiting
+5d2cc344426d: Waiting
+abdece946203: Waiting
+d2b6c8337255: Waiting
+51c30493937c: Waiting
+fc13532503d7: Waiting
+3f2b9e2188c4: Waiting
+136bc6976c20: Waiting
+bee94132c0fc: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+ad5b65da02cf: Waiting
+3f2b9e2188c4: Waiting
+136bc6976c20: Waiting
+bee94132c0fc: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+ad5b65da02cf: Waiting
+5d2cc344426d: Waiting
+abdece946203: Waiting
+d2b6c8337255: Waiting
+51c30493937c: Waiting
+fc13532503d7: Waiting
+bee94132c0fc: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+ad5b65da02cf: Waiting
+5d2cc344426d: Waiting
+abdece946203: Waiting
+d2b6c8337255: Waiting
+51c30493937c: Waiting
+fc13532503d7: Waiting
+3f2b9e2188c4: Waiting
+136bc6976c20: Waiting
+014e56e61396: Layer already exists
+dfad290a5c25: Waiting
+ad5b65da02cf: Waiting
+5d2cc344426d: Waiting
+abdece946203: Waiting
+d2b6c8337255: Waiting
+51c30493937c: Waiting
+fc13532503d7: Waiting
+3f2b9e2188c4: Waiting
+136bc6976c20: Waiting
+bee94132c0fc: Waiting
+5d2cc344426d: Waiting
+abdece946203: Waiting
+d2b6c8337255: Waiting
+51c30493937c: Waiting
+fc13532503d7: Waiting
+3f2b9e2188c4: Waiting
+136bc6976c20: Waiting
+bee94132c0fc: Waiting
+dfad290a5c25: Waiting
+ad5b65da02cf: Waiting
+51c30493937c: Waiting
+fc13532503d7: Waiting
+3f2b9e2188c4: Waiting
+136bc6976c20: Layer already exists
+bee94132c0fc: Waiting
+dfad290a5c25: Waiting
+ad5b65da02cf: Waiting
+5d2cc344426d: Waiting
+abdece946203: Waiting
+d2b6c8337255: Waiting
+bee94132c0fc: Waiting
+dfad290a5c25: Waiting
+ad5b65da02cf: Waiting
+5d2cc344426d: Waiting
+abdece946203: Waiting
+d2b6c8337255: Waiting
+51c30493937c: Waiting
+fc13532503d7: Waiting
+3f2b9e2188c4: Waiting
+bee94132c0fc: Layer already exists
+dfad290a5c25: Layer already exists
+ad5b65da02cf: Layer already exists
+5d2cc344426d: Layer already exists
+abdece946203: Layer already exists
+d2b6c8337255: Waiting
+51c30493937c: Layer already exists
+fc13532503d7: Layer already exists
+3f2b9e2188c4: Waiting
+3f2b9e2188c4: Waiting
+3f2b9e2188c4: Waiting
+3f2b9e2188c4: Pushed
+d2b6c8337255: Pushed
+latest: digest: sha256:557feb2c9445f895306431bbacdbc866c40a39e5b3a5c4b470875e1fa90223ba size: 856
++ docker push vikimano/trend-app:23
+The push refers to repository [docker.io/vikimano/trend-app]
+136bc6976c20: Waiting
+3f2b9e2188c4: Waiting
+d2b6c8337255: Waiting
+bee94132c0fc: Waiting
+abdece946203: Waiting
+51c30493937c: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+5d2cc344426d: Waiting
+ad5b65da02cf: Waiting
+fc13532503d7: Waiting
+abdece946203: Waiting
+51c30493937c: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+5d2cc344426d: Waiting
+ad5b65da02cf: Waiting
+fc13532503d7: Waiting
+136bc6976c20: Waiting
+3f2b9e2188c4: Waiting
+d2b6c8337255: Waiting
+bee94132c0fc: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+5d2cc344426d: Waiting
+ad5b65da02cf: Waiting
+fc13532503d7: Waiting
+136bc6976c20: Waiting
+3f2b9e2188c4: Waiting
+d2b6c8337255: Waiting
+bee94132c0fc: Waiting
+abdece946203: Waiting
+51c30493937c: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+5d2cc344426d: Waiting
+ad5b65da02cf: Waiting
+fc13532503d7: Waiting
+136bc6976c20: Waiting
+3f2b9e2188c4: Waiting
+d2b6c8337255: Waiting
+bee94132c0fc: Waiting
+abdece946203: Waiting
+51c30493937c: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+5d2cc344426d: Waiting
+ad5b65da02cf: Waiting
+fc13532503d7: Waiting
+136bc6976c20: Waiting
+3f2b9e2188c4: Waiting
+d2b6c8337255: Waiting
+bee94132c0fc: Waiting
+abdece946203: Waiting
+51c30493937c: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+5d2cc344426d: Waiting
+ad5b65da02cf: Waiting
+fc13532503d7: Waiting
+136bc6976c20: Waiting
+3f2b9e2188c4: Waiting
+d2b6c8337255: Waiting
+bee94132c0fc: Waiting
+abdece946203: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+5d2cc344426d: Waiting
+ad5b65da02cf: Waiting
+fc13532503d7: Waiting
+136bc6976c20: Waiting
+3f2b9e2188c4: Waiting
+d2b6c8337255: Waiting
+bee94132c0fc: Waiting
+abdece946203: Waiting
+d2b6c8337255: Waiting
+bee94132c0fc: Waiting
+abdece946203: Waiting
+51c30493937c: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+5d2cc344426d: Waiting
+ad5b65da02cf: Waiting
+fc13532503d7: Waiting
+136bc6976c20: Waiting
+3f2b9e2188c4: Waiting
+5d2cc344426d: Waiting
+ad5b65da02cf: Waiting
+fc13532503d7: Waiting
+136bc6976c20: Waiting
+3f2b9e2188c4: Waiting
+d2b6c8337255: Waiting
+bee94132c0fc: Waiting
+abdece946203: Waiting
+51c30493937c: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+fc13532503d7: Waiting
+136bc6976c20: Layer already exists
+3f2b9e2188c4: Waiting
+d2b6c8337255: Waiting
+bee94132c0fc: Waiting
+abdece946203: Waiting
+51c30493937c: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+5d2cc344426d: Waiting
+ad5b65da02cf: Waiting
+d2b6c8337255: Waiting
+bee94132c0fc: Waiting
+abdece946203: Waiting
+51c30493937c: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+5d2cc344426d: Waiting
+ad5b65da02cf: Waiting
+fc13532503d7: Waiting
+3f2b9e2188c4: Waiting
+3f2b9e2188c4: Layer already exists
+d2b6c8337255: Waiting
+bee94132c0fc: Waiting
+abdece946203: Waiting
+51c30493937c: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Waiting
+5d2cc344426d: Waiting
+ad5b65da02cf: Waiting
+fc13532503d7: Waiting
+dfad290a5c25: Waiting
+5d2cc344426d: Waiting
+ad5b65da02cf: Waiting
+fc13532503d7: Waiting
+d2b6c8337255: Waiting
+bee94132c0fc: Waiting
+abdece946203: Waiting
+51c30493937c: Waiting
+014e56e61396: Waiting
+dfad290a5c25: Layer already exists
+5d2cc344426d: Layer already exists
+ad5b65da02cf: Layer already exists
+fc13532503d7: Layer already exists
+d2b6c8337255: Already exists
+bee94132c0fc: Layer already exists
+abdece946203: Layer already exists
+51c30493937c: Waiting
+014e56e61396: Layer already exists
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Waiting
+51c30493937c: Layer already exists
+23: digest: sha256:557feb2c9445f895306431bbacdbc866c40a39e5b3a5c4b470875e1fa90223ba size: 856
+[Pipeline] }
+[Pipeline] // withCredentials
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Run App using Docker Compose)
+[Pipeline] sh
++ docker compose -f docker/docker-compose.yml down --remove-orphans
+ Container trend-app Stopping 
+ Container trend-app Stopped 
+ Container trend-app Removing 
+ Container trend-app Removed 
+ Network docker_default Removing 
+ Network docker_default Removed 
++ docker compose -f docker/docker-compose.yml up -d
+ Network docker_default Creating 
+ Network docker_default Created 
+ Container trend-app Creating 
+ Container trend-app Created 
+ Container trend-app Starting 
+ Container trend-app Started 
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Verify EKS Access)
+[Pipeline] sh
++ echo Using kubeconfig: /var/lib/jenkins/.kube/config
+Using kubeconfig: /var/lib/jenkins/.kube/config
++ kubectl config current-context
+i-0b16e9d9343576766@my-trend-cluster.ap-south-1.eksctl.io
++ kubectl get nodes
+NAME                                            STATUS   ROLES    AGE   VERSION
+ip-192-168-61-81.ap-south-1.compute.internal    Ready    <none>   97m   v1.29.15-eks-ecaa3a6
+ip-192-168-85-186.ap-south-1.compute.internal   Ready    <none>   97m   v1.29.15-eks-ecaa3a6
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Kubernetes EKS Deploy)
+[Pipeline] sh
++ kubectl apply -f k8s/
+deployment.apps/trend-app unchanged
+service/trend-app-service unchanged
++ kubectl rollout status deployment/trend-app
+deployment "trend-app" successfully rolled out
++ kubectl get pods
+NAME                        READY   STATUS    RESTARTS   AGE
+trend-app-88868d8b8-c9g7n   1/1     Running   0          41m
+trend-app-88868d8b8-z7vmv   1/1     Running   0          41m
++ kubectl get svc
+NAME                TYPE           CLUSTER-IP      EXTERNAL-IP                                                                PORT(S)        AGE
+kubernetes          ClusterIP      10.100.0.1      <none>                                                                     443/TCP        103m
+trend-app-service   LoadBalancer   10.100.160.42   a2ac34778e9074241857985de26d4310-2119703291.ap-south-1.elb.amazonaws.com   80:31995/TCP   41m
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Get LoadBalancer Hostname)
+[Pipeline] sh
++ kubectl get svc trend-app-service -n default -o jsonpath={.status.loadBalancer.ingress[0].hostname}
++ LB_HOSTNAME=a2ac34778e9074241857985de26d4310-2119703291.ap-south-1.elb.amazonaws.com
++ echo 🌐 LoadBalancer Hostname: a2ac34778e9074241857985de26d4310-2119703291.ap-south-1.elb.amazonaws.com
+🌐 LoadBalancer Hostname: a2ac34778e9074241857985de26d4310-2119703291.ap-south-1.elb.amazonaws.com
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] echo
+Deployment successful 🚀
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
